@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ .FilenameBase }}</title>
+	<link rel="stylesheet" type="text/css" href="/static/style.css?staticDirBypass=true">
+</head>
+<body>
+	<header>
+		<nav class="breadcrumbs">
+			<ul>
+				{{ range .BreadcrumbNav }}
+					<li>
+						<a href="{{ .Path }}">{{ .Name }}</a>
+					</li>
+				{{ end }}
+			</ul>
+		</nav>
+	</header>
+	<header>
+		{{ if .PrintTitle }}
+			<!-- Only print the filename base if its not already part of the markdown document -->
+			<h1>{{ .FilenameBase }}</h1>
+		{{ end }}
+
+		<!-- Only print metadata table if its not empty -->
+		{{ if ne (len .Meta) 0 }}
+			<table class="metadata">
+				{{ range $key, $value := .Meta }}
+					<!-- Skip title, because it was already printed-->
+					{{ if eq $key "title" }}
+						{{ continue }}
+					{{ end }}
+
+					<tr>
+						<td>{{ $key }}</td>
+						<td>{{ $value }}</td>
+					</tr>
+				{{ end }}
+			</table>
+		{{ end }}
+	</header>
+	<main>
+		{{ .Body }}
+	</main>
+</body>
+</html>

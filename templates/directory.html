@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ .DirectoryName }}</title>
+	<link rel="stylesheet" type="text/css" href="/static/style.css?staticDirBypass=true">
+</head>
+<body>
+	<header>
+		<nav class="breadcrumbs">
+			<ul>
+				{{ range .BreadcrumbNav }}
+					<li>
+						<a href="{{ .Path }}">{{ .Name }}</a>
+					</li>
+				{{ end }}
+			</ul>
+		</nav>
+	</header>
+	<header>
+		<h1>{{ .DirectoryName }}</h1>		
+	</header>
+	<main>
+		{{ if ne (len .Entries) 0 }}
+			<table class="metadata">
+				{{ range .Entries }}
+					<tr>
+						<td><a href="{{ .Path }}">{{ .Name }}</a></td>
+					</tr>
+				{{ end }}
+			</table>
+		{{ else }}
+			<p>Empty directory</p>
+		{{ end }}
+	</main>
+</body>
+</html>
