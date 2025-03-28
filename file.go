@@ -20,6 +20,18 @@ import (
 
 // ServeFile serves a markdown file.
 func ServeFile(w http.ResponseWriter, r *http.Request, osPath string) {
+	stat, err := os.Stat(osPath)
+	if err != nil {
+		slog.Warn("Reading markdown file", "err", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if r.Header.Get("If-Modified-Since") == stat.ModTime().UTC().Format(http.TimeFormat) {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
 	markdownFile, err := os.ReadFile(osPath)
 	if err != nil {
 		// The err could be a not found error (i.e. `os.IsNotExist(err) == true`),
@@ -65,6 +77,9 @@ func ServeFile(w http.ResponseWriter, r *http.Request, osPath string) {
 	}
 
 	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Last-Modified", stat.ModTime().UTC().Format(http.TimeFormat))
+	w.Header().Set("Cache-Control", "max-age=0, must-revalidate")
+
 	err = templates.ExecuteTemplate(w, "markdown.html", struct {
 		FilenameBase  string
 		PrintTitle    bool

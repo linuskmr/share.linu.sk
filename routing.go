@@ -6,12 +6,22 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
+
+var firstRequestTimestamp *time.Time = nil
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// To maintain a flat directory structure (i.e. that the http paths directly map to paths inside the served directory),
 	// we need a trick to serve static files, which could collide with the paths of the served files.
 	if r.URL.Query().Get("staticDirBypass") == "true" {
+		// The normal `http.ServeFile()` would set the `Last-Modified` header, but we are using the embed filesystem, which has no metadata information of files (see https://github.com/golang/go/issues/44854), so we have to set it manually to the program startup time.
+		if firstRequestTimestamp == nil {
+			firstRequestTimestamp = new(time.Time)
+			*firstRequestTimestamp = time.Now()
+		}
+		w.Header().Set("Last-Modified", firstRequestTimestamp.UTC().Format(http.TimeFormat))
+		w.Header().Set("Cache-Control", "max-age=0, must-revalidate")
 		http.FileServerFS(staticFs).ServeHTTP(w, r)
 		return
 	}
