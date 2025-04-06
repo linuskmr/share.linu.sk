@@ -52,7 +52,11 @@ table tr td:first-child {
 }
 
 ul {
-	padding-left: 20px; /* Width of the bullets */
+	padding-left: 1em; /* Width of the bullets */
+}
+
+ol {
+	padding-left: 2em;
 }
 
 ul, ol {
