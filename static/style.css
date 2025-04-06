@@ -84,3 +84,7 @@ nav.breadcrumbs ul {
 		}
 	}
 }
+
+img {
+	max-width: 100%;
+}
