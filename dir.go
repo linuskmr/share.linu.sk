@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // ServeDir lists the directory entries.
@@ -36,8 +37,9 @@ func ServeDir(w http.ResponseWriter, r *http.Request, osPath string) {
 
 	var dirEntries []DirEntry
 	for _, entry := range osEntries {
+		name, _ := strings.CutSuffix(entry.Name(), ".md")
 		dirEntry := DirEntry{
-			Name:  entry.Name(),
+			Name:  name,
 			Path:  filepath.Join(r.URL.Path, entry.Name()),
 			IsDir: entry.IsDir(),
 		}
