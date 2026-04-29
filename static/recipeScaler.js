@@ -62,7 +62,7 @@ function setupInteractiveRecipe() {
             textNode.nodeValue = textNode.nodeValue.replace(ingredientRegex, (match, amountStr, unit, name) => {
                 const originalAmount = parseFloat(amountStr.replace(',', '.'));
                 const scaledAmount = originalAmount * scalingRatio;
-                return `${roundNicely(scaledAmount)} ${unit} ${name}`;
+                return `${roundNicely(scaledAmount)} ${unit} ${name}`;
             });
         }
     }
